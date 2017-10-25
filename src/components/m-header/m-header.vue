@@ -33,12 +33,12 @@ export default {}
     margin-top: 15px
     margin-left: 15px
     font-size: 20px
+    color: $color-title-text
   .search
     position: absolute
     top: 0
     right: 70px
     .icon-sousuo
-      display: block
       padding: 15px
       width: 20px
       height: 20px
@@ -47,7 +47,6 @@ export default {}
     top: 0
     right: 10px
     .icon-jia
-      display: block
       padding: 15px
       width: 20px
       height: 20px

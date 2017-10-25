@@ -38,16 +38,22 @@
 export default {
   computed: {
     isWeixin() {
-      return this.$route.path.indexOf('weixin') !== -1 ? '#icon-weixin1' : '#icon-weixin'
+      return this.$route.path.indexOf('weixin') === 1
+        ? '#icon-weixin1'
+        : '#icon-weixin'
     },
     isAddresslist() {
-      return this.$route.path.indexOf('addresslist') !== -1 ? '#icon-tongxunlu1' : '#icon-tongxunlu'
+      return this.$route.path.indexOf('addresslist') === 1
+        ? '#icon-tongxunlu1'
+        : '#icon-tongxunlu'
     },
     isFind() {
-      return this.$route.path.indexOf('find') !== -1 ? '#icon-faxian' : '#icon-discovery-on'
+      return this.$route.path.indexOf('find') === 1
+        ? '#icon-faxian'
+        : '#icon-discovery-on'
     },
     isMe() {
-      return this.$route.path.indexOf('me') !== -1 ? '#icon-wo1' : '#icon-wo'
+      return this.$route.path.indexOf('me') === 1 ? '#icon-wo1' : '#icon-wo'
     }
   }
 }
@@ -70,8 +76,6 @@ export default {
     font-size: $font-size-small
     .icon-wrapper
       margin: 3px auto
-      width: 25px
-      height: 25px
       .icon
         width: 25px
         height: 25px

@@ -4,6 +4,7 @@ import Weixin from 'components/weixin/weixin'
 import Addresslist from 'components/addresslist/addresslist'
 import Find from 'components/find/find'
 import Me from 'components/me/me'
+import GroupChat from 'components/group-chat/group-chat'
 
 Vue.use(Router)
 
@@ -11,11 +12,17 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: Weixin
+      redirect: '/weixin'
     },
     {
       path: '/weixin',
-      component: Weixin
+      component: Weixin,
+      children: [
+        {
+          path: 'groupchat',
+          component: GroupChat
+        }
+      ]
     },
     {
       path: '/addresslist',
@@ -29,5 +36,9 @@ export default new Router({
       path: '/me',
       component: Me
     }
+    // {
+    //   path: '/groupchat',
+    //   component: GroupChat
+    // }
   ]
 })
