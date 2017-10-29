@@ -6,13 +6,23 @@ import App from './App'
 import router from './router'
 import store from './store'
 import fastclick from 'fastclick'
+import VueLazyLoad from 'vue-lazyload'
 
 import 'common/stylus/index.styl'
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-unused-vars */
+
+require('vconsole')
+
+console.log('hello world')
+
 fastclick.attach(document.body)
+
+Vue.use(VueLazyLoad, {
+  loading: require('common/image/default.jpg')
+})
 
 /* eslint-disable no-new */
 new Vue({

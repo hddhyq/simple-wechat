@@ -16,72 +16,140 @@
           </svg>
         </div>
       </div>
-      <div class="content-wrapper">
+      <div class="content-wrapper" ref="chatwrapper">
         <ul>
-          <li class="item">
-            <!-- v-for="item in groupHistory" -->
-            <div class="who-say i-say">
-              <div class="say-time">
-                2049-10-25 15:59
-              </div>
-              <img src="http://cangdu.org/files/images/19.jpg">
-              <div class="say-triangle">
-                <svg class="icon-triangle-left" aria-hidden="true">
-                  <use xlink:href="#icon-triangle-left"></use>
-                </svg>
-              </div>
-              <div class="say-text">
-                hahah中国hahhahahaha
-              </div>
-            </div>
-          </li>
-          <li class="item">
+          <li :key="item.createTime" ref="chatLine" class="item" v-for="item in chatHistory">
             <!-- v-for="item in groupHistory" -->
             <div class="who-say">
               <div class="say-time">
-                2049-10-25 15:59
+                {{item.createTime}}
               </div>
-              <img src="http://cangdu.org/files/images/19.jpg" width="45px" height="45px">
+              <img width="40" height="40" v-lazy="imgUrl">
               <div class="say-triangle">
                 <svg class="icon-triangle-left" aria-hidden="true">
                   <use xlink:href="#icon-triangle-left"></use>
                 </svg>
               </div>
               <div class="say-text">
-                hahah中国hahahahahahhahahahahahhahahahahahahahahaha
-              </div>
-            </div>
-          </li>
-          <li class="item">
-            <!-- v-for="item in groupHistory" -->
-            <div class="who-say">
-              <div class="say-time">
-                2049-10-25 15:59
-              </div>
-              <img src="http://cangdu.org/files/images/19.jpg" width="45px" height="45px">
-              <div class="say-triangle">
-                <svg class="icon-triangle-left" aria-hidden="true">
-                  <use xlink:href="#icon-triangle-left"></use>
-                </svg>
-              </div>
-              <div class="say-text">
-                hahah中国hahaha
+                {{item.content}}
               </div>
             </div>
           </li>
         </ul>
       </div>
       <div class="footer">
+        <div class="icon-talk">
+          <svg class="icon-yuyin" aria-hidden="true">
+            <use xlink:href="#icon-yuyin"></use>
+          </svg>
+        </div>
+        <div class="input-wrapper">
+          <input type="text" class="text-input" 
+                 v-model="message" maxlength="1000"
+                 @keyup.enter="enterMessage" @input="whatInput">
+        </div>
+        <div class="send-wrapper">
+          <div class="icon-smile">
+            <svg class="icon-biaoqing1" aria-hidden="true">
+              <use xlink:href="#icon-biaoqing1"></use>
+            </svg>
+          </div>
+          <div class="icon-more">
+            <svg class="icon-gengduo" aria-hidden="true" v-show="!light">
+              <use xlink:href="#icon-gengduo"></use>
+            </svg>
+            <div class="send" v-show="light" @click="sendMessage">
+              <span>发送</span>
+            </div>
+          </div>
+        </div>  
       </div>
     </div>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
+  import io from 'socket.io-client'
+  import BScroll from 'better-scroll'
+  import {getChat} from 'api/index'
+
   export default {
+    data() {
+      return {
+        light: false,
+        message: '',
+        socket: null,
+        imgUrl: 'http://cangdu.org/files/images/19.jpg',
+        chatHistory: []
+      }
+    },
+    created() {
+      this.socket = io.connect('http://192.168.1.107:3000')
+    },
+    mounted() {
+      setTimeout(() => {
+        this._initScroll()
+      }, 20)
+      getChat().then((data) => {
+        if (data.code === 200) {
+          this.chatHistory = data.msg
+        }
+      })
+      this.socket.on('boradChat', (data) => {
+        console.log(data)
+        this.chatHistory.push(data)
+      }) // 获取socket聊天记录
+    },
     methods: {
       back() {
         this.$router.back()
+      },
+      enterMessage() {
+        if (this.light) {
+          this.sendMessage()
+        }
+      },
+      whatInput() {
+        if (this.message === '') {
+          this.light = false
+        } else {
+          this.light = true
+        }
+      },
+      sendMessage() {
+        let msgData = {
+          name: 'hdd',
+          content: this.message,
+          createTime: Date.parse(new Date())
+        }
+        this.socket.emit('chat', msgData)
+        this.light = false
+        this.message = ''
+      },
+      refresh() {
+        this.scroll.refresh()
+        this.scrollEnd()
+      },
+      scrollEnd() {
+        if (this.chatHistory.length > 0) {
+          let el = this.$refs.chatLine[this.chatHistory.length - 1]
+          this.scroll.scrollToElement(el, 100)
+        }
+      },
+      _initScroll() {
+        this.scroll = new BScroll(this.$refs.chatwrapper, {
+          probeType: 1,
+          click: true
+        })
+      }
+    },
+    beforeDestroy() {
+    },
+    watch: {
+      chatHistory() {
+        setTimeout(() => {
+          this.refresh()
+        }, 20)
       }
     }
   }
@@ -89,6 +157,7 @@
 
 <style lang="stylus" scoped rel="stylesheet/stylus">
 @import '~common/stylus/variable'
+@import '~common/stylus/mixin'
 
 .group-chat
   position: fixed
@@ -134,8 +203,9 @@
         height: 30px
   .content-wrapper
     position: absolute
+    z-index: -1
     top: 50px
-    bottom: 40px
+    bottom: 45px
     width: 100%
     background-color: $color-highlight-background
     .item
@@ -151,29 +221,26 @@
           top: 0
           padding-left: 70px
           width: 100px
-          margin: 5px
+          margin-bottom: 5px
           font-size: $font-size-small
         img
           display: block
-          width: 40px
-          height: 40px 
-          margin: 10px
-          margin-top: 20px
+          margin: 15px 10px 5px 10px
         .say-triangle
           position: absolute
           left: 52px
-          top: 30px
+          top: 25px
           z-index: 1
           .icon-triangle-left
             width: 20px
             height: 20px
         .say-text
-          max-width: 60%
-          margin: 20px 0 8px 5px
+          max-width: 65%
+          margin: 15px 0 5px 5px
           word-break: break-all
           background: #fff
           color: #000
-          font-size: $font-size-medium
+          font-size: $font-size-medium-x
           line-height: 18px
           padding: 10px 8px
           border: 1px solid #d9d9d9
@@ -183,5 +250,60 @@
         flex-direction: row-reverse
         .say-time
           padding-right: 70px
-
+  .footer
+    position: fixed
+    z-index: 2
+    display: flex
+    justify-content: space-between
+    bottom: 0
+    height: 45px
+    width: 100%
+    border-1px-top($color-line)
+    background: #fff
+    .icon-talk
+      flex: 0 0 35px
+      margin: 5px
+      .icon-yuyin
+        width: 35px
+        height: 35px
+    .input-wrapper
+      flex: 1
+      margin-top: 8px
+      .text-input
+        display: block
+        width: 100%
+        height: 30px
+        line-height: 30px
+        outline: none
+        border-bottom: 1px solid $color-line
+        font-size: $font-size-medium-x
+        &:focus
+          border-bottom: 1px solid $color-green
+    .send-wrapper
+      flex: 0 0 105px
+      position: relative
+      .icon-smile
+        margin: 5px
+        .icon-biaoqing1
+          width: 35px
+          height: 35px
+      .icon-more
+        position: absolute
+        right: 0
+        top: 0
+        margin: 5px
+        .icon-gengduo
+          margin-right: 10px
+          width: 35px
+          height: 35px
+        .send
+          width: 50px
+          margin-top: 2.5px
+          height: 30px
+          line-height: 30px
+          border-radius: 5px
+          text-align: center
+          font-size: $font-size-large
+          background: $color-green-background
+          color: $color-text-w
 </style>
