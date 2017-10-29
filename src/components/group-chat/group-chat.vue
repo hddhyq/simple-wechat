@@ -20,14 +20,14 @@
         <ul>
           <li :key="item.createTime" ref="chatLine" class="item" v-for="item in chatHistory">
             <!-- v-for="item in groupHistory" -->
-            <div class="who-say">
+            <div class="who-say" :class="{ isay : item.name === nickname }">
               <div class="say-time">
-                {{item.createTime}}
+                {{item.createTime | formatDate}}
               </div>
               <img width="40" height="40" v-lazy="imgUrl">
               <div class="say-triangle">
-                <svg class="icon-triangle-left" aria-hidden="true">
-                  <use xlink:href="#icon-triangle-left"></use>
+                <svg class="icon-triangle-left"  aria-hidden="true">
+                  <use :xlink:href="item.name === nickname ? '#icon-triangle-right-copy' : '#icon-triangle-left'"></use>
                 </svg>
               </div>
               <div class="say-text">
@@ -72,6 +72,8 @@
   import io from 'socket.io-client'
   import BScroll from 'better-scroll'
   import {getChat} from 'api/index'
+  import {formatDate} from 'common/js/formatDate'
+  import {mapGetters} from 'vuex'
 
   export default {
     data() {
@@ -79,9 +81,14 @@
         light: false,
         message: '',
         socket: null,
-        imgUrl: 'http://cangdu.org/files/images/19.jpg',
+        imgUrl: 'https://avatars0.githubusercontent.com/u/24468747?s=460&v=4',
         chatHistory: []
       }
+    },
+    computed: {
+      ...mapGetters([
+        'nickname'
+      ])
     },
     created() {
       this.socket = io.connect('http://192.168.1.107:3000')
@@ -96,7 +103,6 @@
         }
       })
       this.socket.on('boradChat', (data) => {
-        console.log(data)
         this.chatHistory.push(data)
       }) // 获取socket聊天记录
     },
@@ -118,7 +124,7 @@
       },
       sendMessage() {
         let msgData = {
-          name: 'hdd',
+          name: this.nickname,
           content: this.message,
           createTime: Date.parse(new Date())
         }
@@ -144,6 +150,12 @@
       }
     },
     beforeDestroy() {
+    },
+    filters: {
+      formatDate (time) {
+        let date = new Date(time)
+        return formatDate(date, 'yyyy-MM-dd hh:mm')
+      }
     },
     watch: {
       chatHistory() {
@@ -225,10 +237,10 @@
           font-size: $font-size-small
         img
           display: block
-          margin: 15px 10px 5px 10px
+          margin: 15px 0px 5px 10px
         .say-triangle
-          position: absolute
-          left: 52px
+          position: relative
+          left: px
           top: 25px
           z-index: 1
           .icon-triangle-left
@@ -236,7 +248,7 @@
             height: 20px
         .say-text
           max-width: 65%
-          margin: 15px 0 5px 5px
+          margin: 15px -7px 5px -7px
           word-break: break-all
           background: #fff
           color: #000
@@ -245,11 +257,20 @@
           padding: 10px 8px
           border: 1px solid #d9d9d9
           border-radius: 8px
-      .i-say
+      .isay
         display: flex
         flex-direction: row-reverse
+        img
+          display: block
+          margin: 15px 10px 5px 0px
         .say-time
           padding-right: 70px
+        .say-triangle
+          .icon-triangle-right-copy
+            width: 20px
+            height: 20px
+        .say-text
+          background: $color-green
   .footer
     position: fixed
     z-index: 2
