@@ -24,10 +24,10 @@
               <div class="say-time">
                 {{item.createTime | formatDate}}
               </div>
-              <img width="40" height="40" v-lazy="imgUrl">
+              <img width="40" height="40" v-lazy="itemImg(item)">
               <div class="say-triangle">
-                <svg class="icon-triangle-left"  aria-hidden="true">
-                  <use :xlink:href="item.name === nickname ? '#icon-triangle-right-copy' : '#icon-triangle-left'"></use>
+                <svg class="icon-triangle"  aria-hidden="true">
+                  <use :xlink:href="item.name === nickname ? '#icon-triangle-right' : '#icon-triangle-left'"></use>
                 </svg>
               </div>
               <div class="say-text">
@@ -74,6 +74,7 @@
   import {getChat} from 'api/index'
   import {formatDate} from 'common/js/formatDate'
   import {mapGetters} from 'vuex'
+  import {imgURL} from 'api/config'
 
   export default {
     data() {
@@ -81,13 +82,14 @@
         light: false,
         message: '',
         socket: null,
-        imgUrl: 'https://avatars0.githubusercontent.com/u/24468747?s=460&v=4',
+        imgUrl: imgURL,
         chatHistory: []
       }
     },
     computed: {
       ...mapGetters([
-        'nickname'
+        'nickname',
+        'avatar'
       ])
     },
     created() {
@@ -126,6 +128,7 @@
         let msgData = {
           name: this.nickname,
           content: this.message,
+          avatar: this.avatar,
           createTime: Date.parse(new Date())
         }
         this.socket.emit('chat', msgData)
@@ -141,6 +144,10 @@
           let el = this.$refs.chatLine[this.chatHistory.length - 1]
           this.scroll.scrollToElement(el, 100)
         }
+      },
+      itemImg(item) {
+        let url = this.imgUrl + item.avatar
+        return url
       },
       _initScroll() {
         this.scroll = new BScroll(this.$refs.chatwrapper, {
@@ -184,7 +191,7 @@
     transform: translate3d(100%, 0, 0)
   .header
     position: relative
-    height: 50px
+    height: 45px
     background: $color-theme
     .back
       position: absolute
@@ -193,15 +200,14 @@
       .icon-fanhui
         display: block
         border-right: 1px solid #222
-        margin: 10px 0px
+        margin: 7px 0px
         padding: 5px 20px
         width: 20px
         height: 20px
     .chat-name
       position: absolute
       left: 80px
-      height: 20px
-      line-height: 20px
+      height: 18px
       margin: 15px 0
       font-size: $font-size-large
       color: $color-title-text
@@ -210,13 +216,13 @@
       right: 0
       top: 0
       .icon-Group
-        padding: 10px 15px
+        padding: 7px 15px
         width: 30px
         height: 30px
   .content-wrapper
     position: absolute
     z-index: -1
-    top: 50px
+    top: 45px
     bottom: 45px
     width: 100%
     background-color: $color-highlight-background
@@ -243,7 +249,7 @@
           left: px
           top: 25px
           z-index: 1
-          .icon-triangle-left
+          .icon-triangle
             width: 20px
             height: 20px
         .say-text
@@ -264,7 +270,7 @@
           display: block
           margin: 15px 10px 5px 0px
         .say-time
-          padding-right: 70px
+          padding-right: 60px
         .say-triangle
           .icon-triangle-right-copy
             width: 20px

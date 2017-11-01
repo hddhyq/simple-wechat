@@ -8,3 +8,15 @@ export function getChat() {
     return Promise.resolve(res.data)
   })
 }
+
+export function login(name) {
+  const url = URL + '/login'
+
+  return axios.get(url, {
+    params: {
+      username: name
+    }
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
+}

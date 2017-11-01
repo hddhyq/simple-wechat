@@ -3,21 +3,30 @@
     <div class="text">
       微信
     </div>
-    <router-link tag="div" class="search" to="/search">
-      <svg class="icon-sousuo" aria-hidden="true">
-        <use xlink:href="#icon-sousuo"></use>
-      </svg>
-    </router-link>
-    <div class="jia">
-      <svg class="icon-jia" aria-hidden="true">
-        <use xlink:href="#icon-jia"></use>
-      </svg>
+    <div v-show="icon">
+      <router-link tag="div" class="search" to="/search">
+        <svg class="icon-sousuo" aria-hidden="true">
+          <use xlink:href="#icon-sousuo"></use>
+        </svg>
+      </router-link>
+      <div class="jia">
+        <svg class="icon-jia" aria-hidden="true">
+          <use xlink:href="#icon-jia"></use>
+        </svg>
+      </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-export default {}
+export default {
+  props: {
+    icon: {
+      type: Boolean,
+      default: true
+    }
+  }
+}
 </script>
 
 <style lang="stylus" scoped rel="stylesheet/stylus">
@@ -25,12 +34,13 @@ export default {}
 
 .m-header
   position: relative
-  height: 50px
+  height: 45px
   color: $color-text-w
   background-color: $color-theme
+  align-content: top
   .text
     display: inline-block
-    margin-top: 15px
+    margin-top: 12px
     margin-left: 15px
     font-size: 20px
     color: $color-title-text
@@ -39,7 +49,7 @@ export default {}
     top: 0
     right: 70px
     .icon-sousuo
-      padding: 15px
+      padding: 12px
       width: 20px
       height: 20px
   .jia
@@ -47,7 +57,7 @@ export default {}
     top: 0
     right: 10px
     .icon-jia
-      padding: 15px
+      padding: 12px
       width: 20px
       height: 20px
 </style>
