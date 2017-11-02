@@ -22,10 +22,10 @@ npm run build --report
 前段主要使用了vue全家桶，关于后端的mongod和express和socket.io比较做建议的了解了用法大致用法和开发中的一些小问题后期博客会进行更新。
 ## [后端代码](https://github.com/hddhyq/simple-node-wechat)
 # 效果图
-![登录界面](https://github.com/hddhyq/simple/raw/master/printscreen/login.png)
+![登录界面](https://github.com/hddhyq/simple-wechat/raw/master/printscreen/login.png)
 ---
-![主界面](https://github.com/hddhyq/simple/raw/master/printscreen/weixin.png)
+![主界面](https://github.com/hddhyq/simple-wechat/raw/master/printscreen/weixin.png)
 ---
-![核心聊天界面](https://github.com/hddhyq/simple/raw/master/printscreen/group.png)
+![核心聊天界面](https://github.com/hddhyq/simple-wechat/raw/master/printscreen/group.png)
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
