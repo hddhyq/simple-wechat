@@ -19,7 +19,7 @@ npm run build --report
 ```
 
 # 技术栈
-前段主要使用了vue全家桶，关于后端的mongod和express和socket.io比较做建议的了解了用法大致用法和开发中的一些小问题后期博客会进行更新。
+前端主要使用了vue全家桶，关于后端的mongod和express和socket.io比较做建议的了解了用法大致用法和开发中的一些小问题后期博客会进行更新。
 ## [后端代码](https://github.com/hddhyq/simple-node-wechat)
 # 效果图
 ![登录界面](https://github.com/hddhyq/simple-wechat/raw/master/printscreen/login.png)
